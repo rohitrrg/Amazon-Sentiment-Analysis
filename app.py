@@ -47,7 +47,6 @@ def predict():
     df = pd.DataFrame({'Reviews':reviews, 'Sentiments':pred})
     df['Sentiments'] = df['Sentiments'].apply(lambda x: 'negative' if x==0 else 'positive')
     df.to_html('./templates/reviews.html')
-    df.to
     pos_count = round((pos_count/total)*100)
     neg_count = round((neg_count/total)*100)
 
