@@ -4,3 +4,5 @@ bs4
 nltk
 pandas
 requests
+pickle
+sklearn
