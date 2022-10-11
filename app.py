@@ -1,12 +1,8 @@
-from crypt import methods
 from flask import Flask, render_template, request
 import pickle
 from nltk.corpus import stopwords
 import re
-import webbrowser
 
-
-from numpy import product
 from scrapy import AmazonReviews
 import pandas as pd
 
