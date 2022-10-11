@@ -7,7 +7,7 @@ class AmazonReviews:
         self.product_link = product_link
         self.header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36','referer':self.product_link}
         page = requests.get(self.product_link, headers=self.header)
-        self.soup = BeautifulSoup(page.content, features="lxml")
+        self.soup = BeautifulSoup(page.content)
         self.title = self.soup.findAll("span", {"class": "a-size-large product-title-word-break"})[0].text[7:]
         print(self.title)
 
@@ -26,7 +26,7 @@ class AmazonReviews:
         for num in range(1, pages+1):
             reviewpage = self.searchreviewpage(reviews_link+"&pageNumber="+str(num)+"&sortBy="+str(sortby)) # "helpful"
             if reviewpage != "Error":
-                soup = BeautifulSoup(reviewpage.content, features="lxml")
+                soup = BeautifulSoup(reviewpage.content)
                 temp =  soup.findAll('span', {'data-hook':'review-body'})
                 if len(temp)!=0:
                     for i in temp:
