@@ -7,27 +7,32 @@
     <title>Sentiment Analysis</title>
 </head>
 <body>
+    <div style="width: 800px; margin-left: 20px;">
     <h1 style="text-align: center; margin-bottom: 40; margin-top: 50px;">Reviews Sentiment Analysis !</h1>
-    <div style="width:600px; margin:0 auto;">
+    <div style= "margin:0 auto;">
         <form action="{{ url_for('predict')}}" method="post">
             <textarea type="text" name="review" placeholder="Please paste your Amazon product link here." required="required"
-                style="width: 600px; height: 100px;" ></textarea>
+                style="width: 745px; height: 100px;" ></textarea>
             
-            <button type="submit" class="btn btn-default">SUBMIT</button>
+            <button style="margin-left: 40%; margin-top: 10px;" type="submit" class="btn btn-default">SUBMIT</button>
         </form>
 
     </div>
-    <div style="width:600px; margin:0 auto;">
+    <div style="width:600px;">
     <p><b>{{ product }}</b></p>
     <p>Reviews collected : <u>{{ rev_count }}</u></p>
     <p>Postive Reviews : <u>{{ pos_per }}</u></p>
     <p>Negative Reviews : <u>{{ neg_per }}</u></p>
     <form action="{{ url_for('show_reviews')}}">
+        
         <!--<button type="submit" class="btn btn-default">Show Reviews</button>-->
-        <a href="https://review-amazon.herokuapp.com/reviews" target="_blank">Show Reviews</a>
+        <a href="https://review-amazon.herokuapp.com/reviews" target="Iframe">Show Reviews</a>
     </form>
+    <iframe style="border:none;" height="100%" width="750px" title="Iframe Example" name="Iframe"></iframe>
     </div>
-    <iframe src="https://review-amazon.herokuapp.com/reviews" height="200px" width="1000px" title="Iframe Example"></iframe>
+</div>
+    
+   
 
     
 </body>
