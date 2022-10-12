@@ -54,9 +54,9 @@ def predict():
                                         rev_count = total,
                                         pos_per = str(pos_count)+"%",
                                         neg_per = str(neg_count)+"%",
-                                        url = str(request.base_url))
+                                        )
 
-@app.route('/reviews')
+@app.route('/show_reviews')
 def show_reviews():
     return render_template('reviews.html')
 
