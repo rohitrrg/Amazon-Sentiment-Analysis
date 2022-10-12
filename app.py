@@ -33,7 +33,7 @@ def clean_texts(reviews):
 def index():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST'])
+@app.route('/', methods=['POST'])
 def predict():
     link = request.form.get("review")
     obj = AmazonReviews(link)
@@ -53,7 +53,8 @@ def predict():
     return render_template('index.html', product = obj.title, 
                                         rev_count = total,
                                         pos_per = str(pos_count)+"%",
-                                        neg_per = str(neg_count)+"%")
+                                        neg_per = str(neg_count)+"%",
+                                        url = str(request.base_url))
 
 @app.route('/reviews')
 def show_reviews():
