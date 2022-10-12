@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, render_template_string
 import pickle
 import re
 
@@ -46,7 +46,7 @@ def predict():
     neg_count = (pred==0).sum()
     df = pd.DataFrame({'Reviews':reviews, 'Sentiments':pred})
     df['Sentiments'] = df['Sentiments'].apply(lambda x: 'negative' if x==0 else 'positive')
-    df.to_html('./templates/reviews.html')
+    htm = df.to_html()
     pos_count = round((pos_count/total)*100)
     neg_count = round((neg_count/total)*100)
 
@@ -54,11 +54,8 @@ def predict():
                                         rev_count = total,
                                         pos_per = str(pos_count)+"%",
                                         neg_per = str(neg_count)+"%",
-                                        )
+                                        url = htm)
 
-@app.route('/show_reviews')
-def show_reviews():
-    return render_template('reviews.html')
 
     
 
