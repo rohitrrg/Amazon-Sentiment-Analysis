@@ -33,7 +33,7 @@ def clean_texts(reviews):
 def index():
     return render_template('index.html')
 
-@app.route('/', methods=['POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
     link = request.form.get("review")
     obj = AmazonReviews(link)
