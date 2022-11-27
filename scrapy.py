@@ -8,8 +8,9 @@ class AmazonReviews:
         self.header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'}
         page = requests.get(self.product_link, headers=self.header)
         self.soup = BeautifulSoup(page.content, features="html.parser")
-        self.title = self.soup.findAll("span", {"class": "a-size-large product-title-word-break"})[0].text[7:]
+        self.title = self.soup.findAll("span", {"class": "a-size-large product-title-word-break"})
         print(self.title)
+        self.title = self.title[0].text[7:]
 
     def searchreviewpage(self, review_link):
         url = str(self.product_link[:21])+review_link
