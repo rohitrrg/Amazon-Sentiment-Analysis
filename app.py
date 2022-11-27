@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, render_template_string
 import pickle
 import re
-import sklearn
 from scrapy import AmazonReviews
 import pandas as pd
 
@@ -80,4 +79,4 @@ def predict():
 
 
 if __name__=="__main__":
-    app.run(port="8000", debug=True)
+    app.run(debug=True)
