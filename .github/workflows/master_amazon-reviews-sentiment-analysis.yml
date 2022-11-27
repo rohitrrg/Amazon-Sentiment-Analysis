@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'amazon-reviews-sentiment-analysis'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F2A34E06A639407F9A8B8EA9473498B1 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1A30BE5DFD9F411E826421CE761CAFB9 }}
