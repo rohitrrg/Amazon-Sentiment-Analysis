@@ -1,7 +1,5 @@
-Flask
-gunicorn
-bs4
-nltk
-pandas
+streamlit
+beautifulsoup4
 requests
 scikit-learn
+pillow
