@@ -1,3 +1,4 @@
 dataset/
 encodings/
 fine_tuned_sentiment_model/
+*.ipynb
