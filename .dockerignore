@@ -1,0 +1,7 @@
+dataset/
+encodings/
+fine_tuned_sentiment_model/
+.github/
+train_model.py
+*.ipynb
+download_dataset.py
