@@ -1,42 +1,49 @@
-import numpy as np
 import streamlit as st
 from PIL import Image
 import requests
 from io import BytesIO
-from scraper import AmazonProductDetails
 from sentiment_analyzer import SentimentAnalyzer
+from reviews import Reviews
+import plotly.express as px
+import pandas as pd
 
-scrapy = AmazonProductDetails()
+rev = Reviews()
 sentiment_analyzer = SentimentAnalyzer(model_name="rohitgadhwar/amazon-review-sentiment-analysis")
 
 st.set_page_config(page_title="Amazon Product Review Sentiment Analysis", layout="centered")
-
-st.markdown(
-    """
-    <style>
-    .main { background-color: #f7f7f7; }
-    .review-box { background-color: white; padding: 1em; border-radius: 10px; box-shadow: 0 0 5px #ccc; margin-bottom: 1em; }
-    .sentiment-positive { color: green; font-weight: bold; }
-    .sentiment-negative { color: red; font-weight: bold; }
-    .sentiment-neutral { color: gray; font-weight: bold; }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 st.title("🛒 Amazon Product Review Sentiment Analysis")
 
 st.write("Enter a product name to analyze reviews and detect sentiment.")
 
 with st.form(key="product_form"):
-    product_name = st.text_input("🔍 Product Name")
+    product_name_selected = st.selectbox(
+                 "Choose a Product:",
+    options=rev.reviews.keys()
+)
     submit = st.form_submit_button("Search")
 
-if submit and product_name.strip() != "":
+if submit and product_name_selected.strip() != "":
     with st.spinner("Fetching product data..."):
-        product_data = scrapy.get_product_details(product_name)
+        product_data = rev.get_review(product_name_selected)
 
     st.markdown("### 🛒 Product Details")
+
+    reviews = product_data['reviews']
+    sentiments = sentiment_analyzer.predict_sentiment(reviews)
+
+    sentiment_counts = pd.Series(sentiments).value_counts()
+    total_reviews = len(sentiments)
+    st.subheader("Sentiment Distribution")
+    sentiment_df = pd.DataFrame(sentiment_counts).reset_index()
+    sentiment_df.columns = ['Sentiment', 'Count']
+    color_map = {
+                    "Positive": "#28a745",
+                    "Negative": "#dc3545"
+                }
+    full_df = pd.DataFrame({'Sentiment': ["Positive", "Negative"]})
+    sentiment_df = pd.merge(full_df, sentiment_df, on='Sentiment', how='left').fillna(0)
+                
 
     # Product Display
     col1, col2 = st.columns([1,2])
@@ -50,18 +57,23 @@ if submit and product_name.strip() != "":
         st.markdown(f" {product_data['title']}")
         st.markdown(f"**💰 Price:**  {product_data['price']}")
     
-
-    reviews_ratings = product_data['reviews']
-    reviews = reviews_ratings['review']
-    ratings = reviews_ratings['rating']
-
-    sentiments = sentiment_analyzer.predict_sentiment(reviews)
+    # Display Pie
+    fig = px.pie(
+                    sentiment_df,
+                    values='Count',
+                    names='Sentiment',
+                    title='Distribution of Sentiments',
+                    color='Sentiment',
+                    color_discrete_map=color_map,
+                    hole=0.3 # Optional: makes it a donut chart
+                )
+    fig.update_traces(textposition='inside', textinfo='percent+label')
+    st.plotly_chart(fig, use_container_width=True)
 
     # Reviews
     st.markdown("### 💬 Reviews with Sentiment")
     for i in range(len(reviews)):
         review = reviews[i]
-        rating = ratings[i]
         sentiment = sentiments[i]
 
         if sentiment == "Positive":
@@ -94,7 +106,6 @@ if submit and product_name.strip() != "":
                 )
         st.markdown(f"""
             <div class="review-box">
-                <strong>⭐ Rating: </strong> {int(rating)} / 5<br>
                 <strong>📝 Review: </strong> {review}<br>
                 <strong>📊 Sentiment: </strong> <span class="{sentiment_class}">{emoji} {sentiment_text}</span>
             </div>
