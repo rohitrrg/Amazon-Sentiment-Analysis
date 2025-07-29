@@ -4,7 +4,7 @@ name: Deploy Streamlit Docker App to Azure
 on:
   push:
     branches:
-      - main # Trigger on pushes to the 'main' branch (change if your primary branch is 'master')
+      - master # Trigger on pushes to the 'main' branch (change if your primary branch is 'master')
 
 # Define environment variables for easy modification and clarity
 env:
