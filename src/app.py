@@ -1,3 +1,4 @@
+import numpy as np
 import streamlit as st
 from PIL import Image
 import requests
@@ -6,7 +7,7 @@ from scraper import AmazonProductDetails
 from sentiment_analyzer import SentimentAnalyzer
 
 scrapy = AmazonProductDetails()
-sentiment_analyzer = SentimentAnalyzer(model_name="fine_tuned_sentiment_model")
+sentiment_analyzer = SentimentAnalyzer(model_name="rohitgadhwar/amazon-review-sentiment-analysis")
 
 st.set_page_config(page_title="Amazon Product Review Sentiment Analysis", layout="centered")
 

@@ -1,0 +1,67 @@
+name: Deploy Streamlit Docker App to Azure
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - main # Trigger on pushes to the 'main' branch (change if your primary branch is 'master')
+
+# Define environment variables for easy modification and clarity
+env:
+  # Replace with the actual name of your Azure App Service
+  AZURE_WEBAPP_NAME: sentiment-docker-app
+  # Replace with the full login server name of your Azure Container Registry (e.g., myacrname.azurecr.io)
+  AZURE_CONTAINER_REGISTRY: sentimentdockerdeployment.azurecr.io
+  # The name you want to give your Docker image (e.g., streamlit-sentiment-app)
+  IMAGE_NAME: streamlit-sentiment-app
+  # Use the GitHub SHA as a unique tag for each image build, ensuring immutability
+  IMAGE_TAG: ${{ github.sha }}
+  # Python version used in your Dockerfile's base image (e.g., python:3.9-slim-buster)
+  PYTHON_VERSION_IN_DOCKERFILE: '3.10-slim-buster'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build-and-deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      # Action to check out your repository code
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      # Action to log in to Azure using a Service Principal
+      uses: azure/login@v1
+      with:
+        # Credentials stored as a GitHub Secret (AZURE_CREDENTIALS)
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Docker Login to Azure Container Registry (ACR)
+      # Action to log in to your ACR so you can push images
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.AZURE_CONTAINER_REGISTRY }}
+        # ACR username and password stored as GitHub Secrets
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build Docker image
+      # Build the Docker image using the Dockerfile in the root of the repository
+      # The image is tagged with the ACR registry, image name, and the unique GitHub SHA
+      run: |
+        docker build -t ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+
+    - name: Push Docker image to ACR
+      # Push the newly built image to your Azure Container Registry
+      run: |
+        docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+    - name: Deploy Docker image to Azure Web App
+      # Action to deploy the Docker image from ACR to your Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        # Specify the full image name and tag to deploy
+        images: '${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
+        # No startup-command is needed here because it's defined in your Dockerfile's CMD instruction
