@@ -1,5 +1,4 @@
 dataset/
 encodings/
 fine_tuned_sentiment_model/
-notebooks/
 __pycache__/
