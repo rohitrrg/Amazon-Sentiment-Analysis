@@ -1,5 +1,6 @@
 dataset/
 encodings/
+notebooks/
 fine_tuned_sentiment_model/
 .github/
 train_model.py
