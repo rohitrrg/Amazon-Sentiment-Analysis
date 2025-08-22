@@ -2,3 +2,4 @@ dataset/
 encodings/
 fine_tuned_sentiment_model/
 __pycache__/
+deploy-docker.yml
